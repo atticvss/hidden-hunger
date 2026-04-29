@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Project Outcomes Tables</title>
+  <style>
+    body {
+      font-family: "Times New Roman", serif;
+      margin: 40px;
+      color: #111;
+      line-height: 1.35;
+    }
+    h1 {
+      font-size: 20pt;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    h2 {
+      font-size: 15pt;
+      margin-top: 28px;
+      margin-bottom: 10px;
+    }
+    p.caption {
+      font-size: 11pt;
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+    p.note {
+      font-size: 10.5pt;
+      margin-top: 6px;
+      margin-bottom: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      table-layout: fixed;
+    }
+    th, td {
+      border: 1px solid #222;
+      padding: 8px 10px;
+      font-size: 11pt;
+      vertical-align: top;
+      word-wrap: break-word;
+    }
+    th {
+      text-align: center;
+      font-weight: bold;
+    }
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Project Outcomes Tables</h1>
+
+  <h2>Table 4.1 Overall Performance of the Proposed System</h2>
+  <table>
+    <tr>
+      <th>Metric</th>
+      <th>Value</th>
+      <th>Remarks</th>
+    </tr>
+    <tr>
+      <td>Accuracy</td>
+      <td class="center">0.xx</td>
+      <td>Overall correctness of multiclass prediction.</td>
+    </tr>
+    <tr>
+      <td>Macro Precision</td>
+      <td class="center">0.xx</td>
+      <td>Average precision across all four classes.</td>
+    </tr>
+    <tr>
+      <td>Macro Recall</td>
+      <td class="center">0.xx</td>
+      <td>Average recall across all four classes.</td>
+    </tr>
+    <tr>
+      <td>Macro F1-Score</td>
+      <td class="center">0.xx</td>
+      <td>Main summary metric for balanced multiclass evaluation.</td>
+    </tr>
+    <tr>
+      <td>Weighted F1-Score</td>
+      <td class="center">0.xx</td>
+      <td>Useful if the dataset is class-imbalanced.</td>
+    </tr>
+    <tr>
+      <td>Average Confidence</td>
+      <td class="center">xx.x%</td>
+      <td>Mean confidence of the predicted class.</td>
+    </tr>
+    <tr>
+      <td>Average Inference Time / Scan</td>
+      <td class="center">xx ms or x.xx s</td>
+      <td>End-to-end prediction speed per uploaded scan.</td>
+    </tr>
+  </table>
+  <p class="caption">Table 4.1 Overall performance evaluation of the proposed hidden hunger detection system on the evaluation dataset.</p>
+
+  <h2>Table 4.2 Class-Wise Performance Evaluation</h2>
+  <table>
+    <tr>
+      <th>Class</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1-Score</th>
+      <th>Support</th>
+    </tr>
+    <tr>
+      <td>Healthy</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td class="center">n</td>
+    </tr>
+    <tr>
+      <td>Nutrient-Like Stress</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td class="center">n</td>
+    </tr>
+    <tr>
+      <td>Drought-Like Stress</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td class="center">n</td>
+    </tr>
+    <tr>
+      <td>Disease-Like Stress</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td class="center">n</td>
+    </tr>
+    <tr>
+      <td>Macro Average</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td class="center">N</td>
+    </tr>
+  </table>
+  <p class="caption">Table 4.2 Class-wise performance comparison of the multiclass stress classifier.</p>
+
+  <h2>Table 4.3 Comparative Evaluation of Different System Configurations</h2>
+  <table>
+    <tr>
+      <th>Configuration</th>
+      <th>Auto Band Selection</th>
+      <th>Auto Threshold Calibration</th>
+      <th>Inference Mode</th>
+      <th>Accuracy</th>
+      <th>Macro F1</th>
+      <th>Remarks</th>
+    </tr>
+    <tr>
+      <td>Rule-Based Baseline</td>
+      <td class="center">No</td>
+      <td class="center">No</td>
+      <td class="center">Rule-based</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td>Fallback-only system.</td>
+    </tr>
+    <tr>
+      <td>RF Model Baseline</td>
+      <td class="center">No</td>
+      <td class="center">No</td>
+      <td class="center">Model-based</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td>Standard trained classifier.</td>
+    </tr>
+    <tr>
+      <td>RF + Auto Band Selection</td>
+      <td class="center">Yes</td>
+      <td class="center">No</td>
+      <td class="center">Model-based</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td>Improved spectral band choice.</td>
+    </tr>
+    <tr>
+      <td>RF + Auto Band + Auto Threshold</td>
+      <td class="center">Yes</td>
+      <td class="center">Yes</td>
+      <td class="center">Model-based</td>
+      <td class="center">0.xx</td>
+      <td class="center">0.xx</td>
+      <td>Full proposed setup.</td>
+    </tr>
+  </table>
+  <p class="caption">Table 4.3 Comparative analysis of different configurations used in the proposed system.</p>
+
+  <h2>Table 4.4 Functional Testing Results</h2>
+  <table>
+    <tr>
+      <th>Test Case</th>
+      <th>Input / Condition</th>
+      <th>Expected Result</th>
+      <th>Actual Result</th>
+      <th>Status</th>
+    </tr>
+    <tr>
+      <td>Valid NPY Upload</td>
+      <td>Correct hyperspectral cube</td>
+      <td>Prediction generated successfully</td>
+      <td>Successful</td>
+      <td class="center">Pass</td>
+    </tr>
+    <tr>
+      <td>Invalid File Type</td>
+      <td>.jpg / .csv</td>
+      <td>Validation error displayed</td>
+      <td>Error shown</td>
+      <td class="center">Pass</td>
+    </tr>
+    <tr>
+      <td>Invalid Band Index</td>
+      <td>Band index greater than total bands</td>
+      <td>HTTP validation failure</td>
+      <td>Error returned</td>
+      <td class="center">Pass</td>
+    </tr>
+    <tr>
+      <td>Heatmap Generation</td>
+      <td>Valid hyperspectral scan</td>
+      <td>NDRE heatmap displayed</td>
+      <td>Successful</td>
+      <td class="center">Pass</td>
+    </tr>
+    <tr>
+      <td>Model Fallback</td>
+      <td>Missing model files</td>
+      <td>Rule-based prediction used</td>
+      <td>Successful</td>
+      <td class="center">Pass</td>
+    </tr>
+    <tr>
+      <td>History Retrieval</td>
+      <td>Saved scans in database</td>
+      <td>History displayed</td>
+      <td>Successful</td>
+      <td class="center">Pass</td>
+    </tr>
+    <tr>
+      <td>Temporal Analysis</td>
+      <td>Same sample_id across multiple scans</td>
+      <td>Trend and onset computed</td>
+      <td>Successful</td>
+      <td class="center">Pass</td>
+    </tr>
+    <tr>
+      <td>Delete Scan Record</td>
+      <td>Existing scan ID</td>
+      <td>Record removed from database</td>
+      <td>Successful</td>
+      <td class="center">Pass</td>
+    </tr>
+  </table>
+  <p class="caption">Table 4.4 Functional testing results of the hidden hunger detection platform.</p>
+
+  <h2>Table 4.5 Example Temporal Analysis Results</h2>
+  <table>
+    <tr>
+      <th>Sample ID</th>
+      <th>Scan 1 Class</th>
+      <th>Scan 2 Class</th>
+      <th>NDRE Delta</th>
+      <th>Stress % Delta</th>
+      <th>Trend Label</th>
+      <th>Onset Detected</th>
+    </tr>
+    <tr>
+      <td>Plant-A</td>
+      <td>Healthy</td>
+      <td>Nutrient-Like Stress</td>
+      <td class="center">-0.xx</td>
+      <td class="center">+x.x</td>
+      <td class="center">Worsening</td>
+      <td class="center">Yes / No</td>
+    </tr>
+    <tr>
+      <td>Plant-B</td>
+      <td>Drought-Like Stress</td>
+      <td>Drought-Like Stress</td>
+      <td class="center">+0.xx</td>
+      <td class="center">-x.x</td>
+      <td class="center">Improving</td>
+      <td class="center">Yes / No</td>
+    </tr>
+  </table>
+  <p class="caption">Table 4.5 Example temporal analysis outputs for repeated plant scans with trend and onset interpretation.</p>
+
+  <p class="note">Note: Replace all placeholder values such as 0.xx, xx.x%, n, and N with your actual project results before final submission.</p>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">Overall Architecture Diagram for the Hidden Hunger Project</title>
+  <desc id="desc">High-level architecture showing the frontend, FastAPI layer, analytics services, model artifacts, SQLite database, and stored outputs for the Hidden Hunger project.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #f7f8fa; }
+      .panel { fill: #ffffff; stroke: #d8dee9; stroke-width: 2; rx: 24; ry: 24; }
+      .panel-title { font: 700 24px 'Helvetica Neue', Arial, sans-serif; fill: #17324d; }
+      .title { font: 700 34px 'Helvetica Neue', Arial, sans-serif; fill: #102033; }
+      .subtitle { font: 400 17px 'Helvetica Neue', Arial, sans-serif; fill: #4f6478; }
+      .box { fill: #fdfefe; stroke: #9cb0c2; stroke-width: 2; rx: 18; ry: 18; }
+      .client { fill: #eef7ff; }
+      .api { fill: #f3f7ef; }
+      .analytics { fill: #fff7ea; }
+      .persistence { fill: #f5efff; }
+      .box-title { font: 700 20px 'Helvetica Neue', Arial, sans-serif; fill: #153047; }
+      .box-body { font: 400 16px 'Helvetica Neue', Arial, sans-serif; fill: #334e68; }
+      .note { font: 600 14px 'Helvetica Neue', Arial, sans-serif; fill: #5b6e7f; }
+      .arrow { fill: none; stroke: #43627f; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .arrow-thin { fill: none; stroke: #6b7f92; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .arrow-dashed { fill: none; stroke: #7f6bb2; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 10 8; marker-end: url(#arrow); }
+      .bidirectional-start { marker-start: url(#arrow-back); }
+      .label { font: 600 14px 'Helvetica Neue', Arial, sans-serif; fill: #55697d; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#43627f"/>
+    </marker>
+    <marker id="arrow-back" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 10 0 L 0 5 L 10 10 z" fill="#43627f"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1600" height="980"/>
+
+  <text class="title" x="800" y="54" text-anchor="middle">Overall Architecture of the Hidden Hunger Detection System</text>
+  <text class="subtitle" x="800" y="84" text-anchor="middle">Based on the current frontend, FastAPI routers, analytics services, model artifacts, storage layer, and SQLite persistence.</text>
+
+  <rect class="panel" x="40" y="120" width="260" height="820"/>
+  <rect class="panel" x="330" y="120" width="330" height="820"/>
+  <rect class="panel" x="690" y="120" width="440" height="820"/>
+  <rect class="panel" x="1160" y="120" width="400" height="820"/>
+
+  <text class="panel-title" x="170" y="160" text-anchor="middle">Client Layer</text>
+  <text class="panel-title" x="495" y="160" text-anchor="middle">API &amp; Orchestration</text>
+  <text class="panel-title" x="910" y="160" text-anchor="middle">Analytics &amp; ML Services</text>
+  <text class="panel-title" x="1360" y="160" text-anchor="middle">Persistence &amp; Assets</text>
+
+  <rect class="box client" x="70" y="220" width="200" height="96"/>
+  <text class="box-title" x="170" y="254" text-anchor="middle">User / Reviewer</text>
+  <text class="box-body" x="170" y="282" text-anchor="middle">Uploads hyperspectral cubes</text>
+  <text class="box-body" x="170" y="304" text-anchor="middle">views predictions and history</text>
+
+  <rect class="box client" x="70" y="360" width="200" height="188"/>
+  <text class="box-title" x="170" y="394" text-anchor="middle">Web Frontend</text>
+  <text class="box-body" x="170" y="422" text-anchor="middle">frontend/index.html</text>
+  <text class="box-body" x="170" y="444" text-anchor="middle">frontend/script.js</text>
+  <text class="box-body" x="170" y="474" text-anchor="middle">File upload, band controls,</text>
+  <text class="box-body" x="170" y="496" text-anchor="middle">stress threshold, sample ID,</text>
+  <text class="box-body" x="170" y="518" text-anchor="middle">results dashboard, history table</text>
+
+  <rect class="box api" x="375" y="210" width="240" height="110"/>
+  <text class="box-title" x="495" y="246" text-anchor="middle">FastAPI App</text>
+  <text class="box-body" x="495" y="274" text-anchor="middle">app/main.py</text>
+  <text class="box-body" x="495" y="296" text-anchor="middle">CORS, routing, error handling</text>
+
+  <rect class="box api" x="375" y="360" width="240" height="220"/>
+  <text class="box-title" x="495" y="396" text-anchor="middle">Upload Router</text>
+  <text class="box-body" x="495" y="424" text-anchor="middle">POST /api/scans/upload</text>
+  <text class="box-body" x="495" y="446" text-anchor="middle">POST /api/process-image</text>
+  <text class="box-body" x="495" y="476" text-anchor="middle">Orchestrates preprocessing,</text>
+  <text class="box-body" x="495" y="498" text-anchor="middle">NDRE analysis, multiclass</text>
+  <text class="box-body" x="495" y="520" text-anchor="middle">prediction, explainability,</text>
+  <text class="box-body" x="495" y="542" text-anchor="middle">temporal logic, and persistence</text>
+
+  <rect class="box api" x="375" y="635" width="240" height="150"/>
+  <text class="box-title" x="495" y="671" text-anchor="middle">History Router</text>
+  <text class="box-body" x="495" y="699" text-anchor="middle">GET /api/history</text>
+  <text class="box-body" x="495" y="721" text-anchor="middle">GET/DELETE /api/history/{scan_id}</text>
+  <text class="box-body" x="495" y="751" text-anchor="middle">Returns history items and</text>
+  <text class="box-body" x="495" y="773" text-anchor="middle">scan details from SQLite</text>
+
+  <rect class="box analytics" x="730" y="170" width="360" height="110"/>
+  <text class="box-title" x="910" y="206" text-anchor="middle">Preprocessing Service</text>
+  <text class="box-body" x="910" y="234" text-anchor="middle">validate_npy_file, load_npy_cube,</text>
+  <text class="box-body" x="910" y="256" text-anchor="middle">band extraction, auto_select_ndre_bands</text>
+
+  <rect class="box analytics" x="730" y="315" width="360" height="132"/>
+  <text class="box-title" x="910" y="351" text-anchor="middle">Spectral Analysis</text>
+  <text class="box-body" x="910" y="379" text-anchor="middle">indices.py + preprocessing helpers</text>
+  <text class="box-body" x="910" y="401" text-anchor="middle">NDRE / NDVI / GNDVI, threshold</text>
+  <text class="box-body" x="910" y="423" text-anchor="middle">calibration, heatmap generation</text>
+
+  <rect class="box analytics" x="730" y="485" width="360" height="160"/>
+  <text class="box-title" x="910" y="521" text-anchor="middle">Multiclass Inference</text>
+  <text class="box-body" x="910" y="549" text-anchor="middle">extract_features_from_cube</text>
+  <text class="box-body" x="910" y="571" text-anchor="middle">ModelBasedInferenceEngine</text>
+  <text class="box-body" x="910" y="593" text-anchor="middle">Random Forest prediction + probabilities</text>
+  <text class="box-body" x="910" y="615" text-anchor="middle">RuleBasedInferenceEngine fallback</text>
+
+  <rect class="box analytics" x="730" y="690" width="170" height="150"/>
+  <text class="box-title" x="815" y="726" text-anchor="middle">Explainability</text>
+  <text class="box-body" x="815" y="754" text-anchor="middle">SHAP or feature</text>
+  <text class="box-body" x="815" y="776" text-anchor="middle">importance fallback</text>
+  <text class="box-body" x="815" y="806" text-anchor="middle">top features + summary</text>
+
+  <rect class="box analytics" x="920" y="690" width="170" height="150"/>
+  <text class="box-title" x="1005" y="726" text-anchor="middle">Temporal Logic</text>
+  <text class="box-body" x="1005" y="754" text-anchor="middle">sample ID matching</text>
+  <text class="box-body" x="1005" y="776" text-anchor="middle">baseline lookup</text>
+  <text class="box-body" x="1005" y="798" text-anchor="middle">trend + onset detection</text>
+
+  <rect class="box analytics" x="730" y="860" width="360" height="56"/>
+  <text class="box-title" x="910" y="895" text-anchor="middle">Storage Service</text>
+  <text class="box-body" x="910" y="914" text-anchor="middle">UUID-based saving for uploads, heatmaps, and analysis artifacts</text>
+
+  <rect class="box persistence" x="1200" y="210" width="320" height="132"/>
+  <text class="box-title" x="1360" y="246" text-anchor="middle">Model Artifacts</text>
+  <text class="box-body" x="1360" y="274" text-anchor="middle">models_store/stress_model.pkl</text>
+  <text class="box-body" x="1360" y="296" text-anchor="middle">models_store/feature_columns.json</text>
+  <text class="box-body" x="1360" y="318" text-anchor="middle">Loaded by inference service</text>
+
+  <rect class="box persistence" x="1200" y="390" width="320" height="220"/>
+  <text class="box-title" x="1360" y="426" text-anchor="middle">SQLite Database</text>
+  <text class="box-body" x="1360" y="454" text-anchor="middle">hidden_hunger.db</text>
+  <text class="box-body" x="1360" y="484" text-anchor="middle">scans</text>
+  <text class="box-body" x="1360" y="506" text-anchor="middle">predictions</text>
+  <text class="box-body" x="1360" y="528" text-anchor="middle">spectral_stats</text>
+  <text class="box-body" x="1360" y="550" text-anchor="middle">scan_metadata</text>
+  <text class="box-body" x="1360" y="572" text-anchor="middle">temporal_analysis</text>
+
+  <rect class="box persistence" x="1200" y="670" width="320" height="170"/>
+  <text class="box-title" x="1360" y="706" text-anchor="middle">Stored Files</text>
+  <text class="box-body" x="1360" y="734" text-anchor="middle">uploads/</text>
+  <text class="box-body" x="1360" y="756" text-anchor="middle">outputs/heatmaps/</text>
+  <text class="box-body" x="1360" y="778" text-anchor="middle">outputs/artifacts/</text>
+  <text class="box-body" x="1360" y="808" text-anchor="middle">Saved with UUID-based names</text>
+
+  <path class="arrow" d="M 170 316 L 170 360"/>
+  <path class="arrow bidirectional-start" d="M 270 454 L 375 454"/>
+  <text class="label" x="322" y="438" text-anchor="middle">multipart upload + JSON</text>
+
+  <path class="arrow" d="M 495 320 L 495 360"/>
+  <path class="arrow" d="M 495 320 L 495 635"/>
+
+  <path class="arrow" d="M 615 470 L 730 225"/>
+  <text class="label" x="684" y="304" text-anchor="middle">upload flow</text>
+
+  <path class="arrow" d="M 910 280 L 910 315"/>
+  <path class="arrow" d="M 910 447 L 910 485"/>
+  <path class="arrow" d="M 910 645 L 815 690"/>
+  <path class="arrow" d="M 615 520 L 920 740"/>
+  <text class="label" x="786" y="710" text-anchor="middle">sample/plant IDs + metrics</text>
+
+  <path class="arrow" d="M 495 580 L 495 860 L 730 888"/>
+  <text class="label" x="620" y="840" text-anchor="middle">save upload + artifacts</text>
+
+  <path class="arrow-dashed" d="M 1090 565 L 1200 276"/>
+  <text class="label" x="1160" y="344" text-anchor="middle">trained model + schema</text>
+
+  <path class="arrow" d="M 615 540 L 1200 500"/>
+  <text class="label" x="908" y="524" text-anchor="middle">create scan, prediction, stats, metadata</text>
+
+  <path class="arrow-thin bidirectional-start" d="M 1090 755 L 1200 500"/>
+  <text class="label" x="1134" y="646" text-anchor="middle">baseline lookup</text>
+
+  <path class="arrow-thin bidirectional-start" d="M 615 710 L 1200 500"/>
+  <text class="label" x="874" y="666" text-anchor="middle">history query / delete</text>
+
+  <path class="arrow" d="M 1090 888 L 1200 755"/>
+  <text class="label" x="1140" y="836" text-anchor="middle">UUID file storage</text>
+
+  <path class="arrow-thin" d="M 815 840 L 250 548"/>
+  <path class="arrow-thin" d="M 910 447 L 250 520"/>
+  <path class="arrow-thin" d="M 1005 840 L 250 494"/>
+  <text class="label" x="505" y="586" text-anchor="middle">response payload includes heatmap, class probabilities, top features, and temporal summary</text>
+
+  <text class="note" x="70" y="914">Suggested caption: Fig. 2.1 Overall architecture of the Hidden Hunger Detection System using hyperspectral input, spectral analysis,</text>
+  <text class="note" x="70" y="934">multiclass classification, explainability, temporal monitoring, storage, and SQLite-backed history services.</text>
+</svg>

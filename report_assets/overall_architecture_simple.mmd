@@ -1,0 +1,12 @@
+flowchart TD
+    U["User / Reviewer"]
+    FE["Web Frontend<br/>Upload NPY cube<br/>Set bands, threshold, sample ID<br/>View predictions and history"]
+    API["FastAPI Backend<br/>Request validation<br/>Upload + history endpoints<br/>Response handling"]
+    CORE["Core Analysis Engine<br/>Preprocessing and band selection<br/>NDRE / spectral analysis + heatmap<br/>Multiclass inference<br/>Explainability<br/>Temporal trend / onset detection"]
+    MODEL["Model Artifacts<br/>Random Forest model<br/>feature_columns.json"]
+    STORE["Persistence Layer<br/>SQLite database<br/>uploads/<br/>outputs/heatmaps<br/>outputs/artifacts"]
+    OUT["System Outputs<br/>Predicted class and confidence<br/>Class probabilities<br/>NDRE heatmap<br/>Top features<br/>Temporal summary and history"]
+
+    U --> FE --> API --> CORE --> OUT
+    MODEL --> CORE
+    CORE --> STORE

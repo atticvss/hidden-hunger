@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="920" viewBox="0 0 1400 920" role="img" aria-labelledby="title desc">
+  <title id="title">Simplified Overall Architecture Diagram for the Hidden Hunger Project</title>
+  <desc id="desc">A simplified architecture showing the user, frontend, FastAPI backend, core analysis engine, model artifacts, persistence layer, and outputs of the Hidden Hunger project.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #f6f8fb; }
+      .title { font: 700 32px 'Helvetica Neue', Arial, sans-serif; fill: #13293d; }
+      .subtitle { font: 400 17px 'Helvetica Neue', Arial, sans-serif; fill: #5d7285; }
+      .box { stroke: #9db0c1; stroke-width: 2.2; rx: 18; ry: 18; }
+      .box-title { font: 700 20px 'Helvetica Neue', Arial, sans-serif; fill: #17324d; }
+      .box-text { font: 400 16px 'Helvetica Neue', Arial, sans-serif; fill: #355168; }
+      .user { fill: #edf6ff; }
+      .frontend { fill: #eff9f1; }
+      .backend { fill: #fff8ea; }
+      .core { fill: #fff2ef; }
+      .side { fill: #f3efff; }
+      .output { fill: #eef7ff; }
+      .arrow { fill: none; stroke: #4e667e; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .note { font: 600 14px 'Helvetica Neue', Arial, sans-serif; fill: #61788d; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4e667e"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1400" height="920"/>
+
+  <text class="title" x="700" y="50" text-anchor="middle">Simplified Overall Architecture of the Hidden Hunger Detection System</text>
+  <text class="subtitle" x="700" y="78" text-anchor="middle">A cleaner report version showing the main processing flow with minimal arrows.</text>
+
+  <rect class="box user" x="510" y="110" width="380" height="86"/>
+  <text class="box-title" x="700" y="145" text-anchor="middle">User / Reviewer</text>
+  <text class="box-text" x="700" y="171" text-anchor="middle">Uploads hyperspectral plant scans and reviews analysis results</text>
+
+  <rect class="box frontend" x="430" y="245" width="540" height="118"/>
+  <text class="box-title" x="700" y="281" text-anchor="middle">Web Frontend</text>
+  <text class="box-text" x="700" y="307" text-anchor="middle">Upload NPY cube, choose NIR / red-edge bands, set threshold, add sample ID</text>
+  <text class="box-text" x="700" y="331" text-anchor="middle">Display heatmap, prediction, class probabilities, top features, and scan history</text>
+
+  <rect class="box backend" x="430" y="410" width="540" height="110"/>
+  <text class="box-title" x="700" y="446" text-anchor="middle">FastAPI Backend</text>
+  <text class="box-text" x="700" y="472" text-anchor="middle">Handles upload and history endpoints, request validation, orchestration, and responses</text>
+  <text class="box-text" x="700" y="496" text-anchor="middle">Main paths: /api/scans/upload, /api/process-image, /api/history</text>
+
+  <rect class="box core" x="365" y="570" width="670" height="174"/>
+  <text class="box-title" x="700" y="606" text-anchor="middle">Core Analysis Engine</text>
+  <text class="box-text" x="700" y="634" text-anchor="middle">1. Preprocessing and band selection</text>
+  <text class="box-text" x="700" y="658" text-anchor="middle">2. NDRE / spectral analysis and heatmap generation</text>
+  <text class="box-text" x="700" y="682" text-anchor="middle">3. Multiclass Random Forest inference with rule-based fallback</text>
+  <text class="box-text" x="700" y="706" text-anchor="middle">4. Explainability and temporal trend / onset analysis</text>
+
+  <rect class="box side" x="80" y="610" width="220" height="106"/>
+  <text class="box-title" x="190" y="646" text-anchor="middle">Model Artifacts</text>
+  <text class="box-text" x="190" y="672" text-anchor="middle">stress_model.pkl</text>
+  <text class="box-text" x="190" y="696" text-anchor="middle">feature_columns.json</text>
+
+  <rect class="box side" x="1100" y="592" width="230" height="142"/>
+  <text class="box-title" x="1215" y="628" text-anchor="middle">Persistence Layer</text>
+  <text class="box-text" x="1215" y="654" text-anchor="middle">SQLite database</text>
+  <text class="box-text" x="1215" y="678" text-anchor="middle">uploads/</text>
+  <text class="box-text" x="1215" y="702" text-anchor="middle">outputs/heatmaps/</text>
+  <text class="box-text" x="1215" y="726" text-anchor="middle">outputs/artifacts/</text>
+
+  <rect class="box output" x="420" y="792" width="560" height="92"/>
+  <text class="box-title" x="700" y="828" text-anchor="middle">System Outputs</text>
+  <text class="box-text" x="700" y="854" text-anchor="middle">Predicted class, confidence, probabilities, NDRE heatmap, explanation, temporal summary, and history records</text>
+
+  <path class="arrow" d="M 700 196 L 700 245"/>
+  <path class="arrow" d="M 700 363 L 700 410"/>
+  <path class="arrow" d="M 700 520 L 700 570"/>
+  <path class="arrow" d="M 700 744 L 700 792"/>
+  <path class="arrow" d="M 300 663 L 365 663"/>
+  <path class="arrow" d="M 1035 663 L 1100 663"/>
+
+  <text class="note" x="80" y="900">Suggested caption: Fig. 2.1 Simplified overall architecture of the Hidden Hunger Detection System showing the frontend, backend, core analytics, model artifacts, persistence layer, and outputs.</text>
+</svg>

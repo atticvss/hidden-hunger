@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hidden Hunger Detection System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"Space Mono"', 'monospace'],
+            sans: ['"DM Sans"', 'sans-serif'],
+          },
+          colors: {
+            surface: '#0b0f0c',
+            panel:   '#111812',
+            border:  '#1e2d22',
+            accent:  '#3ddc68',
+            muted:   '#4a7a57',
+            warn:    '#e8a838',
+            danger:  '#e85538',
+            text:    '#d4e8d9',
+          },
+          boxShadow: {
+            glow: '0 0 24px rgba(61,220,104,0.12)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #0b0f0c; }
+
+    /* Scanline overlay for instrument feel */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 999; pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.06) 2px,
+        rgba(0,0,0,0.06) 4px
+      );
+    }
+
+    /* Corner bracket decoration */
+    .bracket-box {
+      position: relative;
+    }
+    .bracket-box::before,
+    .bracket-box::after {
+      content: '';
+      position: absolute;
+      width: 14px; height: 14px;
+      border-color: #3ddc68;
+      border-style: solid;
+    }
+    .bracket-box::before {
+      top: -1px; left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+    .bracket-box::after {
+      bottom: -1px; right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    /* Drop zone drag state */
+    #drop-zone.drag-over {
+      border-color: #3ddc68;
+      background-color: rgba(61,220,104,0.05);
+    }
+
+    /* Pulse on the status dot */
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+    .pulse { animation: pulse-dot 2s ease-in-out infinite; }
+
+    /* Placeholder shimmer */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position:  400px 0; }
+    }
+    .shimmer {
+      background: linear-gradient(
+        90deg,
+        #111812 25%,
+        #1a2b1e 50%,
+        #111812 75%
+      );
+      background-size: 800px 100%;
+      animation: shimmer 2.4s infinite linear;
+    }
+  </style>
+</head>
+
+<body class="text-text font-sans min-h-screen antialiased">
+
+  <!-- ─── TOP BAR ─────────────────────────────────────────────── -->
+  <div class="border-b border-border px-6 py-2 flex items-center justify-between">
+    <div class="flex items-center gap-2 font-mono text-xs text-muted tracking-widest uppercase">
+      <span class="w-2 h-2 rounded-full bg-accent pulse inline-block"></span>
+      SYS ONLINE — SPECTRAL ANALYSIS MODULE v1.0
+    </div>
+    <div class="font-mono text-xs text-muted tracking-widest" id="clock"></div>
+  </div>
+
+  <!-- ─── HEADER ───────────────────────────────────────────────── -->
+  <header class="px-8 pt-10 pb-6 border-b border-border">
+    <div class="max-w-6xl mx-auto">
+      <p class="font-mono text-xs text-muted uppercase tracking-[0.3em] mb-2">
+        Plant Nutrient Stress Diagnostics
+      </p>
+      <h1 class="text-4xl md:text-5xl font-mono font-bold text-accent leading-tight tracking-tight">
+        Hidden Hunger<br>
+        <span class="text-text font-light">Detection System</span>
+      </h1>
+      <p class="mt-3 text-sm text-muted max-w-xl font-sans font-light leading-relaxed">
+        Upload a hyperspectral NPY cube or a plant photo. Hyperspectral scans use
+        NDRE-based analysis, while photos use an RGB proxy health map to highlight
+        healthier and lower-vigor regions in the same results workflow.
+      </p>
+    </div>
+  </header>
+
+  <!-- ─── MAIN CONTENT ────────────────────────────────────────── -->
+  <main class="max-w-6xl mx-auto px-8 py-10 space-y-10">
+
+    <!-- ── UPLOAD PANEL ── -->
+    <section>
+      <div class="flex items-center gap-3 mb-4">
+        <span class="font-mono text-xs text-muted uppercase tracking-widest">01 /</span>
+        <h2 class="font-mono text-sm text-accent uppercase tracking-widest">Image Ingestion</h2>
+      </div>
+
+      <div class="bracket-box bg-panel border border-border rounded-sm p-6 shadow-glow">
+        <!-- Drop zone -->
+        <div
+          id="drop-zone"
+          class="border-2 border-dashed border-border rounded-sm flex flex-col items-center justify-center gap-4 py-12 px-6 cursor-pointer transition-colors duration-200 hover:border-muted"
+        >
+          <!-- Icon -->
+          <div class="w-14 h-14 rounded-full border border-border flex items-center justify-center">
+            <svg class="w-6 h-6 text-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+            </svg>
+          </div>
+
+          <div class="text-center">
+            <p class="text-text text-sm font-medium">
+              Drag &amp; drop a plant photo or hyperspectral cube
+            </p>
+            <p id="upload-formats" class="text-muted text-xs mt-1 font-mono">
+              .NPY cube or .JPG/.PNG photo
+            </p>
+          </div>
+
+          <!-- Hidden file input triggered by JS -->
+          <input
+            id="file-input"
+            type="file"
+            accept=".npy,.jpg,.jpeg,.png,.webp,application/octet-stream,image/jpeg,image/png,image/webp"
+            class="hidden"
+          />
+
+          <button
+            id="browse-btn"
+            type="button"
+            class="mt-1 px-5 py-2 border border-muted text-muted font-mono text-xs uppercase tracking-widest rounded-sm hover:border-accent hover:text-accent transition-colors duration-150"
+          >
+            Browse Files
+          </button>
+        </div>
+
+        <!-- Selected file feedback -->
+        <div id="file-info" class="hidden mt-4 flex items-center gap-3 px-4 py-3 bg-surface border border-border rounded-sm">
+          <svg class="w-4 h-4 text-accent flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span id="file-name" class="font-mono text-xs text-accent truncate flex-1"></span>
+          <span id="file-size" class="font-mono text-xs text-muted flex-shrink-0"></span>
+          <button id="clear-btn" type="button" class="text-muted hover:text-danger transition-colors ml-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Band configuration row -->
+        <div class="mt-5 grid grid-cols-2 md:grid-cols-9 gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="font-mono text-xs text-muted uppercase tracking-widest">NIR Band #</label>
+            <input id="nir-band" type="number" value="5" min="1"
+              class="bg-surface border border-border text-text font-mono text-sm px-3 py-2 rounded-sm focus:outline-none focus:border-accent transition-colors"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-mono text-xs text-muted uppercase tracking-widest">RedEdge Band #</label>
+            <input id="re-band" type="number" value="4" min="1"
+              class="bg-surface border border-border text-text font-mono text-sm px-3 py-2 rounded-sm focus:outline-none focus:border-accent transition-colors"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-mono text-xs text-muted uppercase tracking-widest">Stress Threshold</label>
+            <input id="stress-threshold" type="number" value="0.2" min="-1" max="1" step="0.01"
+              class="bg-surface border border-border text-text font-mono text-sm px-3 py-2 rounded-sm focus:outline-none focus:border-accent transition-colors"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-mono text-xs text-muted uppercase tracking-widest">Sample ID</label>
+            <input id="sample-id" type="text" placeholder="optional"
+              class="bg-surface border border-border text-text font-mono text-sm px-3 py-2 rounded-sm focus:outline-none focus:border-accent transition-colors"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-mono text-xs text-muted uppercase tracking-widest">Plant ID</label>
+            <input id="plant-id" type="text" placeholder="optional"
+              class="bg-surface border border-border text-text font-mono text-sm px-3 py-2 rounded-sm focus:outline-none focus:border-accent transition-colors"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-mono text-xs text-muted uppercase tracking-widest">Index</label>
+            <select id="index-select"
+              class="bg-surface border border-border text-text font-mono text-sm px-3 py-2 rounded-sm focus:outline-none focus:border-accent transition-colors appearance-none"
+            >
+              <option value="ndre">NDRE</option>
+              <option value="ndvi">NDVI</option>
+              <option value="gndvi">GNDVI</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <label class="w-full flex items-center gap-2 px-3 py-2 bg-surface border border-border rounded-sm font-mono text-xs text-muted">
+              <input id="auto-band-select" type="checkbox" checked class="accent-[var(--c-accent)]" />
+              Auto-select bands
+            </label>
+          </div>
+          <div class="flex items-end">
+            <label class="w-full flex items-center gap-2 px-3 py-2 bg-surface border border-border rounded-sm font-mono text-xs text-muted">
+              <input id="auto-threshold" type="checkbox" class="accent-[var(--c-accent)]" />
+              Auto threshold
+            </label>
+          </div>
+          <div class="flex items-end">
+            <button
+              id="process-btn"
+              type="button"
+              disabled
+              class="w-full py-2 px-4 bg-accent text-surface font-mono text-xs font-bold uppercase tracking-widest rounded-sm
+                     disabled:opacity-30 disabled:cursor-not-allowed
+                     hover:bg-opacity-90 transition-all duration-150 shadow-glow"
+            >
+              ▶ Process Image
+            </button>
+          </div>
+        </div>
+
+        <p id="mode-help" class="mt-3 font-mono text-xs text-muted">
+          Photos ignore band controls and use an RGB proxy workflow. Unknown cubes still benefit from Auto-select and Auto threshold.
+        </p>
+
+        <div id="analysis-warning" class="hidden mt-3 flex items-start gap-3 px-4 py-3 bg-warn/10 border border-warn/30 rounded-sm">
+          <svg class="w-4 h-4 text-warn mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 4h.01M10.29 3.86l-7.2 12.47A2 2 0 004.82 19h14.36a2 2 0 001.73-3l-7.2-12.14a2 2 0 00-3.42 0z"/>
+          </svg>
+          <p id="analysis-warning-msg" class="font-mono text-xs text-warn leading-relaxed"></p>
+        </div>
+
+        <!-- Progress bar (hidden by default) -->
+        <div id="progress-wrap" class="hidden mt-4">
+          <div class="flex justify-between font-mono text-xs text-muted mb-1">
+            <span id="progress-label">Uploading…</span>
+            <span id="progress-pct">0%</span>
+          </div>
+          <div class="h-1 bg-surface rounded-full overflow-hidden">
+            <div id="progress-bar" class="h-full bg-accent transition-all duration-300" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RESULTS PANEL ── -->
+    <section id="results-section">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="font-mono text-xs text-muted uppercase tracking-widest">02 /</span>
+        <h2 class="font-mono text-sm text-accent uppercase tracking-widest">Analysis Output</h2>
+      </div>
+
+      <!-- Image viewers: side by side -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <!-- Original image -->
+        <div class="bracket-box bg-panel border border-border rounded-sm overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-2 border-b border-border">
+            <span class="font-mono text-xs text-muted uppercase tracking-widest">Source Image</span>
+            <span class="font-mono text-xs px-2 py-0.5 border border-border rounded-sm text-muted">RAW</span>
+          </div>
+          <div id="original-wrap" class="relative aspect-square flex items-center justify-center shimmer">
+            <div id="original-placeholder" class="flex flex-col items-center gap-2 text-center px-6">
+              <svg class="w-8 h-8 text-border" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="1"/>
+                <path d="M3 9h18M9 21V9"/>
+              </svg>
+              <p class="font-mono text-xs text-border">Awaiting upload</p>
+            </div>
+            <img
+              id="original-img"
+              class="hidden absolute inset-0 w-full h-full object-contain"
+              alt="Original image preview"
+            />
+          </div>
+          <div class="px-4 py-2 border-t border-border">
+            <span id="original-meta" class="font-mono text-xs text-muted">— × — px &nbsp;·&nbsp; — bands</span>
+          </div>
+        </div>
+
+        <!-- Heatmap output -->
+        <div class="bracket-box bg-panel border border-border rounded-sm overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-2 border-b border-border">
+            <span id="heatmap-title" class="font-mono text-xs text-muted uppercase tracking-widest">NDRE Heatmap</span>
+            <span class="font-mono text-xs px-2 py-0.5 border border-accent/30 rounded-sm text-accent">PROCESSED</span>
+          </div>
+          <div id="heatmap-wrap" class="relative aspect-square flex items-center justify-center shimmer">
+            <div id="heatmap-placeholder" class="flex flex-col items-center gap-2 text-center px-6">
+              <svg class="w-8 h-8 text-border" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                <path d="M12 3v18M3 12h18" stroke-linecap="round"/>
+                <circle cx="12" cy="12" r="4"/>
+              </svg>
+              <p class="font-mono text-xs text-border">Awaiting processing</p>
+            </div>
+            <img
+              id="heatmap-img"
+              class="hidden absolute inset-0 w-full h-full object-contain"
+              alt="Analysis heatmap"
+            />
+          </div>
+          <div class="px-4 py-2 border-t border-border">
+            <!-- Colourmap legend strip -->
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-mono text-xs text-muted">−1.0</span>
+              <div class="flex-1 h-2 rounded-sm" style="background: linear-gradient(to right, #d73027, #fc8d59, #fee08b, #d9ef8b, #91cf60, #1a9850);"></div>
+              <span class="font-mono text-xs text-muted">+1.0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-mono text-xs text-danger">◀ Stressed</span>
+              <span class="font-mono text-xs text-accent">Healthy ▶</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STATS ROW ── -->
+      <div class="mt-5 grid grid-cols-2 md:grid-cols-5 gap-3" id="stats-grid">
+
+        <div class="bg-panel border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+          <span id="stat-min-label" class="font-mono text-xs text-muted uppercase tracking-widest">NDRE Min</span>
+          <span id="stat-min" class="font-mono text-xl text-text">—</span>
+        </div>
+
+        <div class="bg-panel border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+          <span id="stat-max-label" class="font-mono text-xs text-muted uppercase tracking-widest">NDRE Max</span>
+          <span id="stat-max" class="font-mono text-xl text-text">—</span>
+        </div>
+
+        <div class="bg-panel border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+          <span id="stat-mean-label" class="font-mono text-xs text-muted uppercase tracking-widest">Mean</span>
+          <span id="stat-mean" class="font-mono text-xl text-text">—</span>
+        </div>
+
+        <div class="bg-panel border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+          <span id="stat-std-label" class="font-mono text-xs text-muted uppercase tracking-widest">Std Dev</span>
+          <span id="stat-std" class="font-mono text-xl text-text">—</span>
+        </div>
+
+        <!-- Stress badge — full-width highlight -->
+        <div id="stress-badge"
+          class="bg-panel border border-border rounded-sm px-4 py-3 flex flex-col gap-1 md:col-span-1">
+          <span id="stress-label" class="font-mono text-xs text-muted uppercase tracking-widest">Stress Area</span>
+          <span id="stat-stress" class="font-mono text-xl text-warn">—</span>
+          <span id="stress-hint" class="font-mono text-xs text-muted">pixels below threshold</span>
+        </div>
+      </div>
+
+      <!-- ── DIAGNOSIS PANEL ── -->
+      <div class="mt-5 bracket-box bg-panel border border-border rounded-sm overflow-hidden shadow-glow" id="diagnosis-panel">
+        <div class="flex items-center justify-between px-4 py-2 border-b border-border">
+          <span class="font-mono text-xs text-muted uppercase tracking-widest">Model Diagnosis</span>
+          <span class="font-mono text-xs px-2 py-0.5 border border-border rounded-sm text-muted">EXPLAINABILITY</span>
+        </div>
+
+        <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-surface border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+            <span class="font-mono text-xs text-muted uppercase tracking-widest">Diagnosis Summary</span>
+            <span id="diag-summary" class="font-mono text-sm text-text">—</span>
+          </div>
+
+          <div class="bg-surface border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+            <span class="font-mono text-xs text-muted uppercase tracking-widest">Predicted Class</span>
+            <span id="diag-class" class="font-mono text-sm text-accent">—</span>
+          </div>
+
+          <div class="bg-surface border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+            <span class="font-mono text-xs text-muted uppercase tracking-widest">Confidence Score</span>
+            <span id="diag-confidence" class="font-mono text-sm text-text">—</span>
+          </div>
+        </div>
+
+        <div class="px-4 pb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-surface border border-border rounded-sm px-4 py-3">
+            <p class="font-mono text-xs text-muted uppercase tracking-widest mb-2">Explanation Summary</p>
+            <p id="diag-explanation" class="font-mono text-xs text-text leading-relaxed">—</p>
+          </div>
+
+          <div class="bg-surface border border-border rounded-sm px-4 py-3">
+            <p class="font-mono text-xs text-muted uppercase tracking-widest mb-2">Top Contributing Features</p>
+            <ul id="diag-top-features" class="space-y-1 font-mono text-xs text-text"></ul>
+          </div>
+        </div>
+
+        <div class="px-4 pb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-surface border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+            <span class="font-mono text-xs text-muted uppercase tracking-widest">Trend</span>
+            <span id="temporal-trend" class="font-mono text-sm text-muted">—</span>
+          </div>
+          <div class="bg-surface border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+            <span id="temporal-delta-label" class="font-mono text-xs text-muted uppercase tracking-widest">NDRE Change</span>
+            <span id="temporal-ndre-delta" class="font-mono text-sm text-muted">—</span>
+          </div>
+          <div class="bg-surface border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+            <span class="font-mono text-xs text-muted uppercase tracking-widest">Stress Change</span>
+            <span id="temporal-stress-delta" class="font-mono text-sm text-muted">—</span>
+          </div>
+          <div class="bg-surface border border-border rounded-sm px-4 py-3 flex flex-col gap-1">
+            <span class="font-mono text-xs text-muted uppercase tracking-widest">Onset</span>
+            <span id="temporal-onset" class="font-mono text-sm text-muted">—</span>
+          </div>
+        </div>
+
+        <div class="px-4 pb-4">
+          <div class="bg-surface border border-border rounded-sm px-4 py-3">
+            <p class="font-mono text-xs text-muted uppercase tracking-widest mb-2">Temporal Notes</p>
+            <p id="temporal-note" class="font-mono text-xs text-text leading-relaxed">No temporal baseline yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ERROR BANNER ── -->
+      <div id="error-banner"
+        class="hidden mt-4 flex items-start gap-3 px-5 py-4 bg-danger/10 border border-danger/30 rounded-sm">
+        <svg class="w-4 h-4 text-danger mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+        </svg>
+        <p id="error-msg" class="font-mono text-xs text-danger leading-relaxed"></p>
+      </div>
+    </section>
+
+    <!-- ── HISTORY PANEL ── -->
+    <section id="history-section">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="font-mono text-xs text-muted uppercase tracking-widest">03 /</span>
+        <h2 class="font-mono text-sm text-accent uppercase tracking-widest">Previous Analyses</h2>
+      </div>
+
+      <div class="bracket-box bg-panel border border-border rounded-sm overflow-hidden shadow-glow">
+        <div class="flex items-center justify-between px-4 py-2 border-b border-border">
+          <span class="font-mono text-xs text-muted uppercase tracking-widest">History Log</span>
+          <span id="history-count" class="font-mono text-xs px-2 py-0.5 border border-border rounded-sm text-muted">0 records</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[900px]">
+            <thead>
+              <tr class="border-b border-border bg-surface/70">
+                <th class="text-left px-4 py-3 font-mono text-xs text-muted uppercase tracking-widest">File Name</th>
+                <th class="text-left px-4 py-3 font-mono text-xs text-muted uppercase tracking-widest">Upload Date</th>
+                <th class="text-left px-4 py-3 font-mono text-xs text-muted uppercase tracking-widest">Health Status</th>
+                <th class="text-left px-4 py-3 font-mono text-xs text-muted uppercase tracking-widest">Predicted Class</th>
+                <th class="text-left px-4 py-3 font-mono text-xs text-muted uppercase tracking-widest">Confidence</th>
+                <th class="text-left px-4 py-3 font-mono text-xs text-muted uppercase tracking-widest">Stress %</th>
+                <th class="text-left px-4 py-3 font-mono text-xs text-muted uppercase tracking-widest">Trend</th>
+                <th class="text-left px-4 py-3 font-mono text-xs text-muted uppercase tracking-widest">Onset</th>
+              </tr>
+            </thead>
+            <tbody id="history-body" class="divide-y divide-border"></tbody>
+          </table>
+        </div>
+
+        <div id="history-empty" class="px-4 py-6 text-center font-mono text-xs text-border">
+          No previous analyses found.
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── FOOTER ───────────────────────────────────────────────── -->
+  <footer class="border-t border-border mt-10 px-8 py-4">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <span class="font-mono text-xs text-border">
+        Hyperspectral NDRE workflow plus RGB proxy photo workflow
+      </span>
+      <span class="font-mono text-xs text-border">
+        Hidden Hunger Detection System — Minor Project
+      </span>
+    </div>
+  </footer>
+
+  <!-- Clock script only (no upload/processing logic) -->
+  <script>
+    const clock = document.getElementById('clock');
+    const tick = () => { clock.textContent = new Date().toISOString().replace('T',' ').slice(0,19) + ' UTC'; };
+    tick(); setInterval(tick, 1000);
+  </script>
+
+
+  <script src="/frontend/script.js"></script>
+</body>
+</html>

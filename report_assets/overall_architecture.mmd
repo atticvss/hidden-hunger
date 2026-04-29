@@ -1,0 +1,47 @@
+flowchart LR
+    subgraph Client["Client Layer"]
+        U["User / Reviewer"]
+        FE["Web Frontend<br/>frontend/index.html + frontend/script.js<br/>file upload, controls, results dashboard, history view"]
+        U --> FE
+    end
+
+    subgraph API["API & Orchestration Layer"]
+        APP["FastAPI App<br/>app/main.py"]
+        UP["Upload Router<br/>POST /api/scans/upload<br/>POST /api/process-image"]
+        HIST["History Router<br/>GET /api/history<br/>GET/DELETE /api/history/{scan_id}"]
+        FE <--> APP
+        APP --> UP
+        APP --> HIST
+    end
+
+    subgraph Analytics["Analytics & ML Services"]
+        PRE["Preprocessing Service<br/>validate_npy_file<br/>load_npy_cube<br/>auto_select_ndre_bands"]
+        IDX["Spectral Analysis<br/>NDRE / NDVI / GNDVI<br/>threshold calibration<br/>heatmap generation"]
+        INF["Inference Service<br/>feature extraction<br/>Random Forest multiclass prediction"]
+        RULE["Rule-Based Fallback<br/>used when trained model files are unavailable"]
+        XAI["Explainability Service<br/>SHAP / feature importance"]
+        TMP["Temporal Analysis<br/>baseline lookup<br/>trend + onset detection"]
+        STOR["Storage Service<br/>uploads/<br/>outputs/heatmaps<br/>outputs/artifacts"]
+
+        UP --> PRE --> IDX --> INF
+        INF -. fallback .-> RULE
+        INF --> XAI
+        UP --> TMP
+        UP --> STOR
+    end
+
+    subgraph Persistence["Persistence & Assets"]
+        MODEL["Model Artifacts<br/>models_store/stress_model.pkl<br/>models_store/feature_columns.json"]
+        DB["SQLite Database<br/>hidden_hunger.db<br/>scans, predictions, spectral_stats,<br/>scan_metadata, temporal_analysis"]
+        FILES["Stored Files<br/>uploads/<br/>outputs/heatmaps<br/>outputs/artifacts"]
+
+        INF --> MODEL
+        UP --> DB
+        HIST <--> DB
+        TMP <--> DB
+        STOR --> FILES
+    end
+
+    IDX -. heatmap + stats .-> FE
+    XAI -. top features + summary .-> FE
+    TMP -. trend + onset .-> FE

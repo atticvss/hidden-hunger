@@ -1,0 +1,51 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Test and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Tooling caches
+.mypy_cache/
+.ruff_cache/
+.pytype/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# dotenv
+.env
+.env.*
+
+# Large artifacts
+models_store/stress_model.pkl
+
+# Data and generated artifacts
+beyond-visible-spectrum-ai-for-agriculture-2025/
+outputs/
+uploads/
+models_store/
+report_assets/generated/
+*.npy
+*.pkl
+*.db
+*.pptx

@@ -1,0 +1,93 @@
+"""
+STORAGE SERVICE - QUICK REFERENCE
+==================================
+
+FILE ORGANIZATION
+=================
+
+project_root/
+├── uploads/           # Uploaded TIFF files (auto-created)
+│   └── <uuid>.tif
+├── outputs/          # All generated outputs (auto-created)
+│   ├── heatmaps/     # Heatmap PNG images
+│   │   └── scan_<id>_<uuid>.png
+│   └── artifacts/    # Analysis results, debug data
+│       └── scan_<id>_<type>_<uuid>.json
+
+
+STORAGE FILE INFO
+=================
+
+StorageFile NamedTuple returned by save_uploaded_file():
+
+  StorageFile(
+    original_filename="field.tif",              # User's uploaded name
+    saved_filename="a1b2c3d4-e5f6....tif",      # UUID-based name
+    full_path="/absolute/path/uploads/...",     # Absolute path
+    relative_path="uploads/..."                 # Relative path
+  )
+
+
+CORE FUNCTIONS
+==============
+
+save_uploaded_file(filename, contents) -> StorageFile
+  └─ Saves to: uploads/<uuid>.tif
+
+save_heatmap(heatmap_bytes, scan_id) -> StorageFile
+  └─ Saves to: outputs/heatmaps/scan_<id>_<uuid>.png
+
+get_heatmap_output_path(scan_id) -> str
+  └─ Returns: outputs/heatmaps/scan_<id>_heatmap.png
+
+get_artifact_output_path(scan_id, type) -> str
+  └─ Returns: outputs/artifacts/scan_<id>_<type>_<uuid>.json
+
+delete_file(path) -> bool
+file_exists(path) -> bool
+get_file_size(path) -> int
+cleanup_old_files(dir, max_age_days) -> int
+
+
+WORKFLOW EXAMPLE
+================
+
+1. Upload file:
+   file_info = storage.save_uploaded_file(filename, contents)
+   # Returns: StorageFile with full_path and original_filename
+
+2. Create scan record:
+   scan = Scan(
+       filename=file_info.original_filename,
+       file_path=file_info.full_path,
+       ...
+   )
+   db.add(scan)
+   db.commit()
+
+3. Process and save heatmap:
+   heatmap_info = storage.save_heatmap(heatmap_bytes, scan_id=scan.id)
+   
+4. Store stats:
+   spectral_stats = SpectralStats(
+       scan_id=scan.id,
+       heatmap_path=heatmap_info.full_path,
+       heatmap_base64=base64_str,
+       ...
+   )
+   db.add(spectral_stats)
+   db.commit()
+
+
+PRODUCTION TIPS
+===============
+
+✓ UUID naming prevents collisions
+✓ Automatic directory creation (mkdir exists_ok=True)
+✓ Structured return values (StorageFile NamedTuple)
+✓ Path utilities for generated files (get_*_output_path)
+✓ File cleanup function for maintenance
+✓ Works with relative or absolute paths
+
+Next: Consider cloud storage (S3, Azure) for scalability
+"""
